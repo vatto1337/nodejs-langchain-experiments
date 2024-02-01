@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "@langchain/community": "^0.0.25",
+    "@langchain/openai": "^0.0.13",
+    "dotenv": "^16.4.1",
+    "express.js": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
