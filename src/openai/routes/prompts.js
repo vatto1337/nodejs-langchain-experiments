@@ -5,12 +5,16 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
 // Import our model
-import Model from "../openai/dependencies/model.js";
+import Model from "../dependencies/model.js";
 
 // The StringOutputParser takes language model output (either an entire response or as a stream) and converts it into a strin
 const outputParser = new StringOutputParser();
 
 let router = express.Router();
+
+/**
+ * A basic example that tells you a random joke.
+ */
 
 router.get("/jokes", async (req, res) => {
   try {

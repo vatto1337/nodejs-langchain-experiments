@@ -6,8 +6,10 @@
   "dependencies": {
     "@langchain/community": "^0.0.25",
     "@langchain/openai": "^0.0.13",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.4.1",
-    "express.js": "^1.0.0"
+    "express.js": "^1.0.0",
+    "langchain": "^0.1.13"
   },
   "devDependencies": {
     "nodemon": "^3.0.3"

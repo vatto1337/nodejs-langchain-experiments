@@ -9,13 +9,10 @@ const port = 5000;
 loadEnvironmentVariables();
 
 // Routes
-import OpenAI from "./routes/openai/index.js";
+import OpenAI from "./src/openai/index.js";
 
-app.use("/openai", OpenAI);
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.use("/openai/prompts", OpenAI.Prompts);
+app.use("/openai/retrievers", OpenAI.Retrievers);
 
 app.listen(port, () => {
   console.log(`Back-end running on localhost:${port}`);
