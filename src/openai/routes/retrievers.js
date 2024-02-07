@@ -16,11 +16,10 @@ import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retr
 import Model from "../dependencies/model.js";
 import {
   answerQuestionPrompt,
+  historyAwarePrompt,
   historyAwareRetrievalPrompt,
 } from "../dependencies/prompts.js";
-
-// We'll use this to generate Embeddings
-const embeddings = new OpenAIEmbeddings();
+import { getDataSubjectVectorDataset } from "../dependencies/vectors.js";
 
 let router = express.Router();
 
@@ -29,28 +28,11 @@ let router = express.Router();
  */
 
 router.get("/askQuestion", async (req, res) => {
-  // We create the cheerio loader. Like a scrapper.
-  const loader = new CheerioWebBaseLoader(
-    "https://www.privasee.io/post/who-is-a-data-subject"
-  );
-
-  // Extract the content from that website.
-  const docs = await loader.load();
-
-  // @Reminder: The original content is too long so we need to use a splitter to splice the content into chunks.
-  const splitter = new RecursiveCharacterTextSplitter();
-
-  // We now split it.. poof!
-  const splitDocs = await splitter.splitDocuments(docs);
-
   // We'll create a simulated vector store in the server's memory.
-  const vectorstore = await MemoryVectorStore.fromDocuments(
-    splitDocs, // The docs that need to be loaded in the vector store (db of embeddings)
-    embeddings // Embedding methopd
-  );
+  const vectorStore = await getDataSubjectVectorDataset();
 
   // Initialize a retriever wrapper around the vector store
-  const retriever = vectorstore.asRetriever();
+  const retriever = vectorStore.asRetriever();
 
   // This chain takes a list of documents and formats them all into a prompt, then passes that prompt to an LLM. It passes ALL documents, so you should make sure it fits within the context window the LLM you are using.
   const documentChain = await createStuffDocumentsChain({
@@ -72,39 +54,12 @@ router.get("/askQuestion", async (req, res) => {
 });
 
 router.get("/historyAwareRetriever", async (req, res) => {
-  // We create the cheerio loader. Like a scrapper.
-  const loader = new CheerioWebBaseLoader(
-    "https://www.privasee.io/post/who-is-a-data-subject"
-  );
-
-  // Extract the content from that website.
-  const docs = await loader.load();
-
-  // @Reminder: The original content is too long so we need to use a splitter to splice the content into chunks.
-  const splitter = new RecursiveCharacterTextSplitter();
-
-  // We now split it.. poof!
-  const splitDocs = await splitter.splitDocuments(docs);
-
-  // We'll create a simulated vector store in the server's memory.
-  const vectorstore = await MemoryVectorStore.fromDocuments(
-    splitDocs, // The docs that need to be loaded in the vector store (db of embeddings)
-    embeddings // Embedding methopd
-  );
+  // Get the vector dataset of knowledge about GDPR.
+  const vectorStore = await getDataSubjectVectorDataset();
 
   // Initialize a retriever wrapper around the vector store
-  const vectorRetriever = vectorstore.asRetriever();
+  const vectorRetriever = vectorStore.asRetriever();
 
-  const historyAwarePrompt = ChatPromptTemplate.fromMessages([
-    new MessagesPlaceholder("chat_history"),
-    ["user", "{input}"],
-    [
-      "user",
-      "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation",
-    ],
-  ]);
-
-  // This is a chain meant to perform a query on the documents above and return the right documents.
   // Like a search. Is returning only the right documents. Is not one of those "This are the results:"
   const historyAwareRetrieverChain = await createHistoryAwareRetriever({
     llm: Model,

@@ -18,3 +18,12 @@ export const historyAwareRetrievalPrompt = ChatPromptTemplate.fromMessages([
   new MessagesPlaceholder("chat_history"),
   ["user", "{input}"],
 ]);
+
+export const historyAwarePrompt = ChatPromptTemplate.fromMessages([
+  new MessagesPlaceholder("chat_history"),
+  ["user", "{input}"],
+  [
+    "user",
+    "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation",
+  ],
+]);
