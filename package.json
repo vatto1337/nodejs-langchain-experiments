@@ -6,6 +6,8 @@
   "dependencies": {
     "@langchain/community": "^0.0.25",
     "@langchain/openai": "^0.0.13",
+    "@langchain/pinecone": "^0.0.3",
+    "@pinecone-database/pinecone": "^2.0.1",
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.4.1",
     "express.js": "^1.0.0",

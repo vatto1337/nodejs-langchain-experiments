@@ -14,6 +14,9 @@ import OpenAI from "./src/openai/index.js";
 app.use("/openai/prompts", OpenAI.Prompts);
 app.use("/openai/retrievers", OpenAI.Retrievers);
 app.use("/openai/agents", OpenAI.Agents);
+app.use("/openai/questionsAndAnswers", OpenAI.QuestionsAndAnswers);
+app.use("/openai/pinecone", OpenAI.Pinecone);
+
 app.listen(port, () => {
   console.log(`Back-end running on localhost:${port}`);
 });

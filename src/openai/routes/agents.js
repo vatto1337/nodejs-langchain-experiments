@@ -14,10 +14,10 @@ let router = express.Router();
 const llm = new ChatOpenAI({ temperature: 0 });
 
 /**
- * A simple route that answers questions related to GDPR.
+ * A simple agent that is a wizard about GDPR.
  */
 
-router.get("/test1", async (req, res) => {
+router.get("/bobLegalWizard", async (req, res) => {
   // We'll create a simulated vector store in the server's memory.
   const vectorStore = await getDataSubjectVectorDataset();
 
@@ -52,20 +52,12 @@ router.get("/test1", async (req, res) => {
   const prompt = await pull("hwchase17/openai-tools-agent");
 
   // We now create the agent.
-
-  const agent = await createOpenAIToolsAgent({
-    llm,
-    tools,
-    prompt,
-  });
+  const agent = await createOpenAIToolsAgent({ llm, tools, prompt });
 
   // 🧠 Definition: How does the agent know what tools it can use? In this case we're relying on OpenAI function calling LLMs, which take functions as a separate argument and have been specifically trained to know when to invoke those functions.
 
   // A chain managing the agent and its available tools.
-  const agentExecutor = new AgentExecutor({
-    agent,
-    tools,
-  });
+  const agentExecutor = new AgentExecutor({ agent, tools });
 
   const result = await agentExecutor.invoke({
     input:
